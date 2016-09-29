@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class QuizActivity extends AppCompatActivity implements QuizActivityView{
+public class QuizActivity extends AppCompatActivity implements QuizActivityView {
 
     private int mCorrectAnswers;
     private Question mCurrentQuestion;
@@ -38,7 +38,7 @@ public class QuizActivity extends AppCompatActivity implements QuizActivityView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-//        Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Oswald-Regular.ttf");
+        Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/Oswald-Regular.ttf");
 
         mAnswerButtons = new SparseArray<>();
         mSoundPlayer = new SoundPlayer(
@@ -51,24 +51,24 @@ public class QuizActivity extends AppCompatActivity implements QuizActivityView{
         mPresenter = new QuizActivityPresenter(this);
 
         mCorrectAnswersTextView = getView(R.id.correctAnswersTextView);
-//        mCorrectAnswersTextView.setTypeface(typeFace);
+        mCorrectAnswersTextView.setTypeface(typeFace);
         mCorrectAnswers = 0;
         mPresenter.updateCorrectAnswersText(mCorrectAnswers);
 
         mAttemptsTextView = getView(R.id.attempsTextView);
-//        mAttemptsTextView.setTypeface(typeFace);
+        mAttemptsTextView.setTypeface(typeFace);
         int attempts = 0;
         mPresenter.updateAttempsText(attempts);
 
         mQuestionTextView = getView(R.id.questionTextView);
-//        mQuestionTextView.setTypeface(typeFace);
+        mQuestionTextView.setTypeface(typeFace);
 
         mSubmitButton = getView(R.id.submitButton);
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(mAnswersRadioGroup.getCheckedRadioButtonId() != -1) {
+                if (mAnswersRadioGroup.getCheckedRadioButtonId() != -1) {
 
                     int attempts = mCurrentQuestion.getNumber();
                     mPresenter.updateAttempsText(attempts);
@@ -88,8 +88,7 @@ public class QuizActivity extends AppCompatActivity implements QuizActivityView{
                     mAnswersRadioGroup.clearCheck();
                     mCurrentQuestion = mQuiz.generateQuestion();
                     setQuestion(mCurrentQuestion);
-                }
-                else{
+                } else {
 
                     String noSelectionMessage = mCurrentQuestion.getErrorMessage();
                     displayResult(v.getContext(), noSelectionMessage);
@@ -98,10 +97,9 @@ public class QuizActivity extends AppCompatActivity implements QuizActivityView{
         });
 
         mAnswersRadioGroup = getView(R.id.radioButtonGroup);
-        for(int child = 0 ; child < mAnswersRadioGroup.getChildCount(); child++)
-        {
-            RadioButton rButton = (RadioButton)mAnswersRadioGroup.getChildAt(child);
-//            rButton.setTypeface(typeFace);
+        for (int child = 0; child < mAnswersRadioGroup.getChildCount(); child++) {
+            RadioButton rButton = (RadioButton) mAnswersRadioGroup.getChildAt(child);
+            rButton.setTypeface(typeFace);
             mAnswerButtons.append(rButton.getId(), rButton);
         }
 
@@ -123,7 +121,7 @@ public class QuizActivity extends AppCompatActivity implements QuizActivityView{
 
     @Override
     public void updateRadioButtonTextView(int index, String text) {
-        RadioButton rButton = (RadioButton)mAnswersRadioGroup.getChildAt(index);
+        RadioButton rButton = (RadioButton) mAnswersRadioGroup.getChildAt(index);
         rButton.setText(text);
     }
 
@@ -149,31 +147,26 @@ public class QuizActivity extends AppCompatActivity implements QuizActivityView{
         }
     }
 
-    private void setQuestion(Question question){
+    private void setQuestion(Question question) {
 
         mPresenter.updateQuestionText(question.getText());
 
         List<Integer> values = new ArrayList<>(question.getAnswers());
         Collections.shuffle(values);
-        for(int i = 0 ; i < mAnswerButtons.size() ; i++)
-        {
-            mPresenter.updateRadioButtonText(i, String.format(Locale.ENGLISH,"%d", values.get(i)));
+        for (int i = 0; i < mAnswerButtons.size(); i++) {
+            mPresenter.updateRadioButtonText(i, String.format(Locale.ENGLISH, "%d", values.get(i)));
         }
     }
 
-    private <T extends View> T getView(int id){
+    private <T extends View> T getView(int id) {
         return (T) findViewById(id);
     }
 
-    private void displayResult(Context ctx, String message){
+    private void displayResult(Context ctx, String message) {
 
         Toast.makeText(
                 ctx,
                 message,
                 Toast.LENGTH_SHORT).show();
-    }
-
-    public Question getCurrentQuestion() {
-        return mCurrentQuestion;
     }
 }
